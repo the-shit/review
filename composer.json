@@ -1,0 +1,54 @@
+{
+    "name": "the-shit/review",
+    "description": "PR review toolkit for Laravel agents — structural analysis, convention checking, and contextual verdicts.",
+    "keywords": ["laravel", "pr-review", "code-review", "github", "ai-agent"],
+    "homepage": "https://github.com/the-shit/review",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jordan Partridge",
+            "email": "jordan@partridge.rocks"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
+        "laravel/ai": "^0.3",
+        "nikic/php-parser": "^5.0",
+        "saloonphp/saloon": "^3.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "orchestra/testbench": "^10.0 || ^11.0 || dev-main",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0 || ^4.0",
+        "phpstan/phpstan": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TheShit\\Review\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TheShit\\Review\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TheShit\\Review\\ReviewServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
