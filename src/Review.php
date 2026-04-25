@@ -2,10 +2,12 @@
 
 namespace TheShit\Review;
 
+use ConduitUi\GitHubConnector\Connector;
 use ConduitUI\Pr\DataTransferObjects\File;
 use ConduitUI\Pr\PullRequests;
 use TheShit\Review\Analyzers\Classifier;
 use TheShit\Review\Analyzers\ConventionChecker;
+use TheShit\Review\Analyzers\DependentsChecker;
 use TheShit\Review\Analyzers\JudgmentCall;
 use TheShit\Review\Analyzers\RiskAssessor;
 use TheShit\Review\Contracts\Rule;
@@ -123,7 +125,19 @@ final class Review
             $findings = (new ConventionChecker($this->rules))->checkAll($patches);
         }
 
-        // 5. Judgment call (optional)
+        // 5. Dependents check (multi-repo awareness)
+        if ($this->dependents !== []) {
+            try {
+                $connector = app(Connector::class);
+                $dependentsChecker = new DependentsChecker($connector);
+                $dependentFindings = $dependentsChecker->check($this->repo, [], $this->dependents);
+                $findings = [...$findings, ...$dependentFindings];
+            } catch (\Throwable) {
+                // Dependents check is best-effort — don't block the review
+            }
+        }
+
+        // 6. Judgment call (optional)
         if ($this->includeJudgment) {
             $patches = $this->extractPatches($files);
             $llmFindings = (new JudgmentCall)->call(
